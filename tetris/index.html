@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
+  <title>Tetris Mobile</title>
+  <style>
+    :root{--bg:#0b1020;--panel:#141c35;--text:#eef2ff;--muted:#aab4d6}
+    *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+    body{margin:0;background:radial-gradient(1000px 600px at 20% -20%,#243b77 0,#0b1020 50%),#0b1020;color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;display:flex;justify-content:center;min-height:100vh}
+    .wrap{width:min(96vw,560px);padding:14px 10px 20px;display:grid;gap:10px}
+    .bar{display:flex;justify-content:space-between;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);border-radius:12px;padding:10px 12px}
+    .muted{color:var(--muted);font-size:13px}
+    canvas{width:100%;aspect-ratio:10/20;background:#0d1328;border:1px solid rgba(255,255,255,.15);border-radius:12px}
+    .row{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+    button{border:none;border-radius:10px;padding:12px 0;background:#1c2b58;color:#fff;font-weight:700;font-size:16px}
+    button:active{transform:scale(.98)}
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <div class="bar"><div>🧩 Tetris</div><div class="muted">分数 <b id="score">0</b>｜等级 <b id="lv">1</b></div></div>
+  <canvas id="game" width="300" height="600"></canvas>
+  <div class="row">
+    <button id="left">←</button><button id="rot">↻</button><button id="right">→</button><button id="down">↓</button>
+  </div>
+  <div class="row"><button id="start" style="grid-column:span 2">开始/暂停</button><button id="drop" style="grid-column:span 2">到底</button></div>
+</div>
+<script>
+(()=>{
+const COL=10,ROW=20,S=30,c=document.getElementById('game'),x=c.getContext('2d');
+const scoreEl=document.getElementById('score'),lvEl=document.getElementById('lv');
+const colors=['#000','#38bdf8','#f97316','#facc15','#4ade80','#a78bfa','#fb7185','#22d3ee'];
+const shapes=[[],[[1,1,1,1]],[[2,0,0],[2,2,2]],[[0,0,3],[3,3,3]],[[4,4],[4,4]],[[0,5,5],[5,5,0]],[[0,6,0],[6,6,6]],[[7,7,0],[0,7,7]]];
+let grid,cur,next,score=0,level=1,lines=0,timer=null,running=false,speed=650;
+const empty=()=>Array.from({length:ROW},()=>Array(COL).fill(0));
+const rand=()=>1+Math.floor(Math.random()*7);
+const spawn=(id=rand())=>({id,shape:shapes[id].map(r=>[...r]),x:3,y:0});
+function reset(){grid=empty();score=0;level=1;lines=0;speed=650;cur=spawn();next=spawn();ui();draw();}
+function ui(){scoreEl.textContent=score;lvEl.textContent=level}
+function collide(p=cur,dx=0,dy=0,sh=p.shape){for(let r=0;r<sh.length;r++)for(let cc=0;cc<sh[r].length;cc++){if(!sh[r][cc])continue;let nx=p.x+cc+dx,ny=p.y+r+dy;if(nx<0||nx>=COL||ny>=ROW)return true;if(ny>=0&&grid[ny][nx])return true;}return false}
+function merge(){for(let r=0;r<cur.shape.length;r++)for(let cc=0;cc<cur.shape[r].length;cc++)if(cur.shape[r][cc]&&cur.y+r>=0)grid[cur.y+r][cur.x+cc]=cur.id}
+function clearLines(){let cnt=0;for(let r=ROW-1;r>=0;r--){if(grid[r].every(v=>v)){grid.splice(r,1);grid.unshift(Array(COL).fill(0));cnt++;r++;}}if(cnt){lines+=cnt;score+=[0,100,300,500,800][cnt]*level;level=1+Math.floor(lines/10);speed=Math.max(120,650-(level-1)*55);if(running){clearInterval(timer);timer=setInterval(tick,speed);}ui();}}
+function rotate(){const sh=cur.shape;const rs=sh[0].map((_,i)=>sh.map(r=>r[i]).reverse());if(!collide(cur,0,0,rs))cur.shape=rs;draw();}
+function move(dx){if(!collide(cur,dx,0)){cur.x+=dx;draw();}}
+function drop(){if(!collide(cur,0,1)){cur.y++;draw();return true;}merge();clearLines();cur=next;next=spawn();if(collide(cur,0,0)){running=false;clearInterval(timer);timer=null;alert('游戏结束，得分：'+score);}draw();return false}
+function hardDrop(){while(drop()){} }
+function tick(){drop()}
+function drawCell(cx,cy,v){x.fillStyle=colors[v];x.fillRect(cx*S,cy*S,S,S);x.strokeStyle='rgba(255,255,255,.08)';x.strokeRect(cx*S,cy*S,S,S)}
+function draw(){x.clearRect(0,0,c.width,c.height);for(let r=0;r<ROW;r++)for(let cc=0;cc<COL;cc++)if(grid[r][cc])drawCell(cc,r,grid[r][cc]);for(let r=0;r<cur.shape.length;r++)for(let cc=0;cc<cur.shape[r].length;cc++)if(cur.shape[r][cc])drawCell(cur.x+cc,cur.y+r,cur.id)}
+function toggle(){if(!running){running=true;timer=setInterval(tick,speed)}else{running=false;clearInterval(timer);timer=null}}
+
+document.getElementById('left').onclick=()=>move(-1);
+document.getElementById('right').onclick=()=>move(1);
+document.getElementById('down').onclick=()=>drop();
+document.getElementById('rot').onclick=rotate;
+document.getElementById('drop').onclick=hardDrop;
+document.getElementById('start').onclick=toggle;
+window.addEventListener('keydown',e=>{if(e.key==='ArrowLeft')move(-1);if(e.key==='ArrowRight')move(1);if(e.key==='ArrowDown')drop();if(e.key==='ArrowUp')rotate();if(e.key===' ')hardDrop();});
+reset();
+})();
+</script>
+</body>
+</html>
