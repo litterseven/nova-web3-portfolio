@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Pixel Runner</title>
+  <style>
+    :root{--bg:#0a0f1f;--panel:#111a33;--text:#eef2ff;--muted:#aab4d6;--btn:#1d2a52;--ok:#22c55e}
+    *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+    body{margin:0;background:radial-gradient(1200px 700px at 10% -20%,#23396f 0,#0a0f1f 48%),#0a0f1f;color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;display:flex;justify-content:center;min-height:100vh}
+    .wrap{width:min(96vw,720px);padding:14px 10px 22px;display:grid;gap:10px}
+    .bar{display:flex;justify-content:space-between;align-items:center;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);padding:10px 12px;border-radius:14px}
+    .muted{color:var(--muted);font-size:13px}
+    canvas{width:100%;aspect-ratio:16/9;background:linear-gradient(180deg,#71b8ff,#d7efff 55%,#8cd678 56%,#4b9b42 100%);border-radius:14px;border:1px solid rgba(255,255,255,.16);box-shadow:0 18px 35px rgba(0,0,0,.35)}
+    .controls{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+    .controls button{border:none;background:var(--btn);color:#fff;border-radius:12px;padding:12px 0;font-size:18px;font-weight:700}
+    .controls button:active{transform:scale(.98)}
+    .jump{background:linear-gradient(135deg,#22c55e,#14b8a6)!important}
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <div class="bar"><div>🕹️ Pixel Runner</div><div class="muted">金币 <b id="coins">0</b> ｜ 生命 <b id="hp">3</b></div></div>
+  <canvas id="game" width="960" height="540"></canvas>
+  <div class="controls">
+    <button id="left">←</button>
+    <button class="jump" id="jump">跳</button>
+    <button id="right">→</button>
+  </div>
+  <div class="muted">玩法：左右移动、跳跃踩怪，到达右侧旗子通关（原创素材，类马里奥玩法）。</div>
+</div>
+<script>
+(() => {
+  const cvs = document.getElementById('game'), ctx = cvs.getContext('2d');
+  const W = cvs.width, H = cvs.height, GROUND = H - 92;
+  const coinsEl = document.getElementById('coins'), hpEl = document.getElementById('hp');
+
+  const keys = {left:false,right:false};
+  const player = {x:60,y:GROUND-58,w:42,h:58,vx:0,vy:0,speed:4.2,jump:13,onGround:false,coins:0,hp:3,inv:0};
+  const world = {x:0,w:2600};
+  const platforms = [
+    {x:0,y:GROUND,w:2600,h:100},{x:280,y:420,w:120,h:18},{x:520,y:370,w:120,h:18},
+    {x:760,y:330,w:140,h:18},{x:1160,y:430,w:140,h:18},{x:1400,y:380,w:140,h:18},{x:1780,y:340,w:160,h:18}
+  ];
+  const enemies = [
+    {x:680,y:GROUND-34,w:34,h:34,dir:1,alive:true,min:640,max:860},
+    {x:1320,y:GROUND-34,w:34,h:34,dir:-1,alive:true,min:1260,max:1500},
+    {x:1860,y:GROUND-34,w:34,h:34,dir:1,alive:true,min:1800,max:2060}
+  ];
+  const coins = [360,560,805,1210,1460,1810,1910,2100].map((x,i)=>({x,y:i%2?300:350,r:10,taken:false}));
+  const flag = {x:2440,y:GROUND-120,w:20,h:120};
+  let won=false;
+
+  function reset(){
+    player.x=60; player.y=GROUND-58; player.vx=0; player.vy=0; player.coins=0; player.hp=3; player.inv=0;
+    enemies.forEach(e=>e.alive=true); coins.forEach(c=>c.taken=false); won=false;
+    coinsEl.textContent=0; hpEl.textContent=3;
+  }
+
+  function aabb(a,b){return a.x<b.x+b.w&&a.x+a.w>b.x&&a.y<b.y+b.h&&a.y+a.h>b.y;}
+
+  function update(){
+    if (won) return;
+    player.vx = (keys.left?-1:0)+(keys.right?1:0);
+    player.x += player.vx*player.speed;
+    player.vy += 0.62; if (player.vy>15) player.vy=15; player.y += player.vy;
+
+    player.onGround=false;
+    for (const p of platforms){
+      if (player.x+player.w>p.x && player.x<p.x+p.w){
+        if (player.y+player.h>=p.y && player.y+player.h-player.vy<=p.y){
+          player.y=p.y-player.h; player.vy=0; player.onGround=true;
+        }
+      }
+    }
+
+    if (player.x<0) player.x=0;
+    if (player.y>H+120) hurt();
+
+    enemies.forEach(e=>{
+      if(!e.alive) return;
+      e.x += e.dir*1.4; if(e.x<e.min||e.x>e.max) e.dir*=-1;
+      if(aabb(player,e)){
+        if(player.vy>1 && player.y+player.h-10<e.y+8){ e.alive=false; player.vy=-8; }
+        else if(player.inv<=0){ hurt(); }
+      }
+    });
+
+    coins.forEach(c=>{
+      if(c.taken) return;
+      const dx=(player.x+player.w/2)-c.x, dy=(player.y+player.h/2)-c.y;
+      if(dx*dx+dy*dy<26*26){ c.taken=true; player.coins++; coinsEl.textContent=player.coins; }
+    });
+
+    if (player.x+player.w>flag.x && player.y+player.h>flag.y){ won=true; }
+
+    world.x = Math.max(0, Math.min(player.x-220, world.w-W));
+    if(player.inv>0) player.inv--;
+  }
+
+  function hurt(){
+    player.hp--; hpEl.textContent=player.hp; player.inv=60;
+    player.x=Math.max(40, player.x-80); player.y=200; player.vy=0;
+    if(player.hp<=0){ alert('闯关失败，再来一次'); reset(); }
+  }
+
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    ctx.save(); ctx.translate(-world.x,0);
+
+    // clouds
+    ctx.fillStyle='rgba(255,255,255,.75)';
+    [[180,90],[440,120],[980,80],[1600,100],[2200,130]].forEach(([x,y])=>{ctx.beginPath();ctx.ellipse(x,y,45,20,0,0,Math.PI*2);ctx.fill();});
+
+    // platforms
+    ctx.fillStyle='#3f7d38'; platforms.forEach(p=>ctx.fillRect(p.x,p.y,p.w,p.h));
+    ctx.fillStyle='#6a3d1f'; platforms.forEach(p=>ctx.fillRect(p.x,p.y,p.w,10));
+
+    // flag
+    ctx.fillStyle='#374151'; ctx.fillRect(flag.x,flag.y,flag.w,flag.h);
+    ctx.fillStyle= won ? '#22c55e' : '#ef4444'; ctx.fillRect(flag.x+flag.w,flag.y+8,44,28);
+
+    // coins
+    coins.forEach(c=>{ if(c.taken) return; ctx.fillStyle='#fbbf24'; ctx.beginPath(); ctx.arc(c.x,c.y,c.r,0,Math.PI*2); ctx.fill(); });
+
+    // enemies
+    enemies.forEach(e=>{ if(!e.alive) return; ctx.fillStyle='#7c3aed'; ctx.fillRect(e.x,e.y,e.w,e.h); ctx.fillStyle='#fff'; ctx.fillRect(e.x+6,e.y+10,6,6); ctx.fillRect(e.x+22,e.y+10,6,6); });
+
+    // player
+    if(player.inv>0 && Math.floor(player.inv/4)%2===0){ctx.globalAlpha=.4}
+    ctx.fillStyle='#2563eb'; ctx.fillRect(player.x,player.y,player.w,player.h);
+    ctx.fillStyle='#f8fafc'; ctx.fillRect(player.x+8,player.y+10,8,8);
+    ctx.fillRect(player.x+26,player.y+10,8,8);
+    ctx.globalAlpha=1;
+
+    ctx.restore();
+
+    if (won){
+      ctx.fillStyle='rgba(0,0,0,.45)'; ctx.fillRect(0,0,W,H);
+      ctx.fillStyle='#fff'; ctx.font='bold 54px system-ui'; ctx.textAlign='center';
+      ctx.fillText('通关！', W/2, H/2-12);
+      ctx.font='24px system-ui'; ctx.fillText('金币：'+player.coins+'  ·  点击屏幕重开', W/2, H/2+34);
+    }
+  }
+
+  function loop(){ update(); draw(); requestAnimationFrame(loop); }
+
+  function jump(){ if(player.onGround && !won) { player.vy=-player.jump; player.onGround=false; } }
+
+  document.getElementById('left').onpointerdown=()=>keys.left=true;
+  document.getElementById('left').onpointerup=()=>keys.left=false;
+  document.getElementById('left').onpointerleave=()=>keys.left=false;
+  document.getElementById('right').onpointerdown=()=>keys.right=true;
+  document.getElementById('right').onpointerup=()=>keys.right=false;
+  document.getElementById('right').onpointerleave=()=>keys.right=false;
+  document.getElementById('jump').onclick=jump;
+
+  window.addEventListener('keydown',e=>{
+    if(e.key==='ArrowLeft') keys.left=true;
+    if(e.key==='ArrowRight') keys.right=true;
+    if(e.key===' '||e.key==='ArrowUp') jump();
+  });
+  window.addEventListener('keyup',e=>{ if(e.key==='ArrowLeft') keys.left=false; if(e.key==='ArrowRight') keys.right=false; });
+  cvs.addEventListener('click',()=>{ if(won) reset(); });
+
+  reset(); loop();
+})();
+</script>
+</body>
+</html>
