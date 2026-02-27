@@ -3,69 +3,56 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Shasha — Web3 Minimal Portfolio</title>
+  <title>Shasha — Japanese Minimal Portfolio</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&family=Zen+Old+Mincho:wght@400;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="./styles.css" />
 </head>
 <body>
-  <div class="noise"></div>
-  <div class="orb orb-a"></div>
-  <div class="orb orb-b"></div>
-
+  <div class="grain"></div>
   <header class="nav">
-    <div class="logo">沙沙 / portfolio</div>
+    <div class="logo">沙沙 / 静</div>
     <nav>
       <a href="#about">关于</a>
-      <a href="#work">作品</a>
+      <a href="#works">作品</a>
+      <a href="#mood">视觉</a>
       <a href="#contact">联系</a>
     </nav>
   </header>
 
   <main class="wrap">
     <section class="hero panel">
-      <div class="hero-left">
-        <p class="jp">静けさの中で、強く作る。</p>
-        <h1>日式极简 × Web3 叙事设计</h1>
-        <p class="desc">虚拟示例内容：聚焦链上产品体验、品牌视觉、增长叙事。用克制风格呈现复杂技术，用细节完成转化。</p>
-        <div class="actions">
-          <a class="btn solid" href="#work">查看项目</a>
-          <a class="btn" href="#contact">立即合作</a>
-        </div>
-      </div>
-      <div class="hero-art" aria-label="anime mood visual">
-        <div class="sun"></div>
-        <div class="character"></div>
-        <div class="line l1"></div>
-        <div class="line l2"></div>
-      </div>
+      <p class="micro">二月 · 京都 · 静けさ</p>
+      <h1>日式极简的 Web3 个人站</h1>
+      <p>以低饱和莫兰迪配色、留白和安静排版，承载产品、设计与增长叙事。</p>
     </section>
 
-    <section id="work" class="work">
-      <article class="card panel">
-        <span>01 / Product</span>
-        <h3>Kumo Wallet</h3>
-        <p>重构新手路径与风险提示，让首次转账成功率提升 27%。</p>
-      </article>
-      <article class="card panel">
-        <span>02 / Growth</span>
-        <h3>Sora Campaign</h3>
-        <p>通过内容矩阵+任务漏斗，首月新增地址 48,000+。</p>
-      </article>
-      <article class="card panel">
-        <span>03 / Brand</span>
-        <h3>Yoru Protocol</h3>
-        <p>搭建统一视觉与官网信息结构，品牌识别度显著提升。</p>
-      </article>
+    <section id="mood" class="mood">
+      <figure class="panel card big">
+        <img src="https://source.unsplash.com/1600x1000/?anime,illustration,japan" alt="anime style illustration" loading="lazy" />
+        <figcaption>Anime-style visual / 可商用图库来源</figcaption>
+      </figure>
+      <figure class="panel card">
+        <img src="https://source.unsplash.com/1000x1000/?manga,illustration" alt="manga illustration mood" loading="lazy" />
+      </figure>
+      <figure class="panel card">
+        <img src="https://source.unsplash.com/1000x1000/?japanese,street,night" alt="japanese city mood" loading="lazy" />
+      </figure>
     </section>
 
-    <section id="about" class="about panel">
+    <section id="works" class="works">
+      <article class="panel item"><span>01</span><h3>Wallet UX</h3><p>新手路径与风控提示重构，提升转化。</p></article>
+      <article class="panel item"><span>02</span><h3>Growth System</h3><p>内容矩阵 + 社区漏斗，打造可持续增长。</p></article>
+      <article class="panel item"><span>03</span><h3>Brand Narrative</h3><p>以极简叙事统一产品与视觉语境。</p></article>
+    </section>
+
+    <section id="about" class="panel about">
       <h2>About</h2>
-      <p>你现在看到的是“莫兰迪日系”方向首版：低饱和配色、留白优先、轻动漫氛围。后续可继续替换为你的真实经历、案例数据、社媒链接与联系方式。</p>
+      <p>这是正式版方向：只用可商用图库风格图，不直接使用受版权限制的动漫角色素材。</p>
     </section>
 
-    <footer id="contact" class="foot panel">
+    <footer id="contact" class="panel foot">
       <p>hello@shasha.studio</p>
       <p>X / Farcaster: @shasha_xyz</p>
     </footer>
