@@ -59,5 +59,41 @@
       <p>Journaling / Visual Diary</p>
     </footer>
   </main>
+
+  <div id="poemModal" class="poem-modal" aria-hidden="true">
+    <div class="poem-card" role="dialog" aria-modal="true" aria-label="饭饭的诗">
+      <button class="poem-close" id="poemClose" aria-label="关闭">×</button>
+      <p class="poem-tag">饭饭 · 小诗</p>
+      <h3>《饭饭》</h3>
+      <p>
+        你在风里，拾起一片红。<br/>
+        你在雨后，看见一抹绿。<br/>
+        你在夜色，把月光轻轻放进口袋。<br/>
+        而我在你身旁，<br/>
+        把这些微小的瞬间，
+        排成温柔、可反复打开的页。
+      </p>
+    </div>
+  </div>
+
+  <script>
+    (() => {
+      const modal = document.getElementById('poemModal');
+      const closeBtn = document.getElementById('poemClose');
+      const triggers = document.querySelectorAll('.card img');
+      const openModal = () => {
+        modal.classList.add('show');
+        modal.setAttribute('aria-hidden', 'false');
+      };
+      const closeModal = () => {
+        modal.classList.remove('show');
+        modal.setAttribute('aria-hidden', 'true');
+      };
+      triggers.forEach(el => el.addEventListener('click', openModal));
+      closeBtn.addEventListener('click', closeModal);
+      modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
+      window.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
+    })();
+  </script>
 </body>
 </html>

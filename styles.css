@@ -27,7 +27,8 @@ h1{margin:.5rem 0 .8rem;font-family:"Zen Old Mincho",serif;font-size:clamp(1.7re
 .mood{display:grid;grid-template-columns:1.45fr 1fr 1fr;gap:10px;grid-auto-rows:210px}
 .mood.three{grid-template-columns:1.3fr 1fr 1fr;grid-auto-rows:230px}
 .card{position:relative;overflow:hidden}
-.card img{width:100%;height:100%;object-fit:cover;display:block;filter:saturate(.88) contrast(.94)}
+.card img{width:100%;height:100%;object-fit:cover;display:block;filter:saturate(.88) contrast(.94);cursor:pointer;transition:transform .35s ease, filter .35s ease}
+.card img:hover{transform:scale(1.03);filter:saturate(.95) contrast(.97)}
 .hero-card{grid-row:span 2}
 figcaption{position:absolute;left:12px;bottom:10px;padding:5px 10px;border-radius:999px;font-size:12px;background:#f3eee7d9;color:#5e6674;border:1px solid #a0a8b433}
 
@@ -39,6 +40,15 @@ figcaption{position:absolute;left:12px;bottom:10px;padding:5px 10px;border-radiu
 .about,.foot{padding:16px 18px}
 .about h2{margin:.2rem 0 .4rem;font-family:"Zen Old Mincho",serif}
 .about p,.foot p{margin:.3rem 0;color:var(--sub);line-height:1.75}
+
+.poem-modal{position:fixed;inset:0;background:rgba(24,28,36,.4);backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;padding:18px;z-index:30}
+.poem-modal.show{display:flex}
+.poem-card{position:relative;width:min(560px,92vw);background:#f5f1eadf;border:1px solid #9ba4b433;border-radius:18px;padding:20px 18px 18px;box-shadow:0 16px 48px rgba(36,40,52,.22);animation:floatUp .25s ease}
+.poem-card h3{margin:.2rem 0 .7rem;font-family:"Zen Old Mincho",serif}
+.poem-card p{margin:0;color:#616977;line-height:1.9}
+.poem-tag{font-size:12px;color:#7b8390;letter-spacing:.06em}
+.poem-close{position:absolute;right:10px;top:10px;border:none;background:#ffffffb8;color:#4c5563;width:30px;height:30px;border-radius:999px;font-size:20px;line-height:1;cursor:pointer}
+@keyframes floatUp{from{transform:translateY(14px);opacity:0}to{transform:translateY(0);opacity:1}}
 
 @media (max-width:900px){
   .mood,.mood.three{grid-template-columns:1fr;grid-auto-rows:220px}
