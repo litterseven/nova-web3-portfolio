@@ -3,97 +3,70 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Shasha — Japanese Minimal Portfolio</title>
+  <title>Shasha / FanFan — Studio</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&family=Zen+Old+Mincho:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="./styles.css" />
 </head>
 <body>
-  <div class="grain"></div>
-  <header class="nav">
-    <div class="logo">沙沙 / 饭饭</div>
-    <nav>
-      <a href="#about">关于</a>
-      <a href="#mood">影像</a>
-      <a href="#notes">片段</a>
-      <a href="#contact">联系</a>
-    </nav>
-  </header>
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="brand">沙沙 / 饭饭</div>
+      <nav class="menu">
+        <a href="#about">About</a>
+        <a href="#projects">Projects</a>
+        <a href="#publications">Publications</a>
+        <a href="#news">News</a>
+        <a href="#contact">Contact</a>
+      </nav>
+      <div class="lang">
+        <a href="#">English</a>
+        <a href="#">日本語</a>
+        <a class="active" href="#">中文</a>
+      </div>
+    </aside>
 
-  <main class="wrap">
-    <section class="hero panel">
-      <p class="micro">雨后 · 木纹 · 月色</p>
-      <h1>把日常细节，收藏成温柔的序列。</h1>
-      <p>这一组图像围绕自然质感：落叶的红、藤叶的绿、夜空的月。保持克制留白，让画面自己说话。</p>
-    </section>
+    <main class="content">
+      <section id="about" class="section hero">
+        <h1>Quiet Works, Long Echo.</h1>
+        <p>以克制方式做网页与视觉系统。关注留白、比例、材质感和可持续更新。</p>
+      </section>
 
-    <section id="mood" class="mood three">
-      <figure class="panel card hero-card">
-        <img src="./assets/img/mood-2.jpg" alt="雨后藤叶" loading="lazy" />
-        <figcaption>雨后藤叶</figcaption>
-      </figure>
-      <figure class="panel card">
-        <img src="./assets/img/mood-1.jpg" alt="落红叶" loading="lazy" />
-        <figcaption>一叶落红</figcaption>
-      </figure>
-      <figure class="panel card">
-        <img src="./assets/img/mood-3.jpg" alt="月色" loading="lazy" />
-        <figcaption>月尖</figcaption>
-      </figure>
-    </section>
+      <section id="projects" class="section grid-2">
+        <article class="card image-card">
+          <img src="./assets/img/mood-2.jpg" alt="project visual" />
+          <p>Project / Rain Texture Interface</p>
+        </article>
+        <article class="card image-card">
+          <img src="./assets/img/mood-1.jpg" alt="project visual" />
+          <p>Project / Seasonal Color Study</p>
+        </article>
+      </section>
 
-    <section id="notes" class="notes">
-      <article class="panel item"><span>01</span><h3>颜色对照</h3><p>红叶与绿叶形成冷暖对比，页面更有呼吸感。</p></article>
-      <article class="panel item"><span>02</span><h3>材质层次</h3><p>木纹、石路、夜空让视觉从“可爱”走向“质感”。</p></article>
-      <article class="panel item"><span>03</span><h3>静谧叙事</h3><p>月牙收尾，把整组图像归于安静、克制、留白。</p></article>
-    </section>
+      <section id="publications" class="section">
+        <h2>Publications</h2>
+        <ul class="list">
+          <li><span>2026</span><em>Visual Diary Vol.1</em></li>
+          <li><span>2025</span><em>Minimal Interface Notes</em></li>
+          <li><span>2025</span><em>Wabi-Sabi on the Web</em></li>
+        </ul>
+      </section>
 
-    <section id="about" class="panel about">
-      <h2>About</h2>
-      <p>当前版本已按你的实拍图更新。后续可继续做“季节档案”系列：春芽、夏海、秋叶、冬月，持续迭代。</p>
-    </section>
+      <section id="news" class="section news">
+        <h2>News</h2>
+        <ul class="list">
+          <li><span>2026.02</span><em>新站首版上线（高还原极简风）。</em></li>
+          <li><span>2026.02</span><em>个人影像档案模块更新。</em></li>
+          <li><span>2026.01</span><em>视觉系统与移动端样式重构。</em></li>
+        </ul>
+      </section>
 
-    <footer id="contact" class="panel foot">
-      <p>hello@shasha.studio</p>
-      <p>Journaling / Visual Diary</p>
-    </footer>
-  </main>
-
-  <div id="poemModal" class="poem-modal" aria-hidden="true">
-    <div class="poem-card" role="dialog" aria-modal="true" aria-label="饭饭的诗">
-      <button class="poem-close" id="poemClose" aria-label="关闭">×</button>
-      <p class="poem-tag">饭饭 · 小诗</p>
-      <h3>《饭饭》</h3>
-      <p>
-        你在风里，拾起一片红。<br/>
-        你在雨后，看见一抹绿。<br/>
-        你在夜色，把月光轻轻放进口袋。<br/>
-        而我在你身旁，<br/>
-        把这些微小的瞬间，
-        排成温柔、可反复打开的页。
-      </p>
-    </div>
+      <section id="contact" class="section contact">
+        <h2>Contact</h2>
+        <p>hello@shasha.studio</p>
+      </section>
+    </main>
   </div>
-
-  <script>
-    (() => {
-      const modal = document.getElementById('poemModal');
-      const closeBtn = document.getElementById('poemClose');
-      const triggers = document.querySelectorAll('.card img');
-      const openModal = () => {
-        modal.classList.add('show');
-        modal.setAttribute('aria-hidden', 'false');
-      };
-      const closeModal = () => {
-        modal.classList.remove('show');
-        modal.setAttribute('aria-hidden', 'true');
-      };
-      triggers.forEach(el => el.addEventListener('click', openModal));
-      closeBtn.addEventListener('click', closeModal);
-      modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
-      window.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
-    })();
-  </script>
 </body>
 </html>
