@@ -46,24 +46,6 @@ h2{font-size:18px;font-weight:400;margin:0 0 10px}
 .list em{font-style:normal}
 .contact p{margin:0;color:var(--sub)}
 
-.gate{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;background:radial-gradient(circle at 20% 10%,#ffffff,#efefe9 40%,#e8e8e2)}
-.gate-card{width:min(520px,94vw);background:#f9f9f5;border:1px solid var(--line);padding:24px;border-radius:16px;text-align:center}
-.gate-tip{font-size:12px;color:var(--sub);margin:0}
-.gate-card h2{margin:.4rem 0 .3rem;font-weight:500}
-.gate-sub{margin:0 0 14px;color:var(--sub);font-size:14px}
-.gate-play{height:120px;position:relative;border:1px dashed var(--line);border-radius:12px;background:#fff}
-.star{position:absolute;width:32px;height:32px;border:none;border-radius:50%;cursor:pointer;background:linear-gradient(180deg,#ffd76d,#ffb34f);box-shadow:0 4px 14px rgba(0,0,0,.12)}
-.star::before{content:'✦';font-size:16px;color:#fff}
-.s1{left:18%;top:20%;animation:float 2.2s ease-in-out infinite}
-.s2{left:46%;top:56%;animation:float 1.8s ease-in-out infinite .2s}
-.s3{left:74%;top:28%;animation:float 2s ease-in-out infinite .4s}
-.star.done{opacity:.35;transform:scale(.85)}
-.gate-progress{height:8px;border-radius:999px;background:#ecece5;margin:12px 0;overflow:hidden}
-.gate-progress span{display:block;height:100%;width:0;background:#8fa08f;transition:width .25s}
-.enter-btn{width:100%;padding:10px 14px;border:1px solid #b9b9b0;background:#fff;border-radius:10px}
-.enter-btn:disabled{opacity:.45}
-@keyframes float{50%{transform:translateY(-8px)}}
-
 @media (max-width:860px){
   .layout{grid-template-columns:1fr}
   .sidebar{position:static;height:auto;border-right:none;border-bottom:1px solid var(--line);gap:14px}
