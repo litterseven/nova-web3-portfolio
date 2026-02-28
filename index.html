@@ -10,7 +10,22 @@
   <link rel="stylesheet" href="./styles.css" />
 </head>
 <body>
-  <div class="layout">
+  <div id="gate" class="gate">
+    <div class="gate-card">
+      <p class="gate-tip">进入前互动一下</p>
+      <h2>捕捉 3 颗小星星</h2>
+      <p class="gate-sub">点中漂浮小星星后，即可进入主页。</p>
+      <div class="gate-play" id="gatePlay">
+        <button class="star s1" aria-label="star"></button>
+        <button class="star s2" aria-label="star"></button>
+        <button class="star s3" aria-label="star"></button>
+      </div>
+      <div class="gate-progress"><span id="gateBar"></span></div>
+      <button id="enterBtn" class="enter-btn" disabled>进入主页</button>
+    </div>
+  </div>
+
+  <div class="layout" id="mainSite" style="display:none">
     <aside class="sidebar">
       <div class="brand">沙沙 / 饭饭</div>
       <nav class="menu">
@@ -69,5 +84,33 @@
       </section>
     </main>
   </div>
+
+  <script>
+    (() => {
+      const gate = document.getElementById('gate');
+      const main = document.getElementById('mainSite');
+      const stars = Array.from(document.querySelectorAll('.star'));
+      const bar = document.getElementById('gateBar');
+      const btn = document.getElementById('enterBtn');
+      let hit = 0;
+
+      function enter() {
+        gate.style.display = 'none';
+        main.style.display = 'grid';
+      }
+
+      stars.forEach((s) => {
+        s.addEventListener('click', () => {
+          if (s.classList.contains('done')) return;
+          s.classList.add('done');
+          hit += 1;
+          bar.style.width = `${(hit / 3) * 100}%`;
+          if (hit >= 3) btn.disabled = false;
+        });
+      });
+
+      btn.addEventListener('click', enter);
+    })();
+  </script>
 </body>
 </html>
